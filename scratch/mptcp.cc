@@ -40,7 +40,7 @@ main(int argc, char *argv[])
   LogComponentEnable("MpTcpSocketBase", LOG_INFO);
 
   Config::SetDefault("ns3::Ipv4GlobalRouting::FlowEcmpRouting", BooleanValue(true));
-  Config::SetDefault("ns3::TcpSocket::SegmentSize", UintegerValue(1400));
+  Config::SetDefault("ns3::TcpSocket::SegmentSize", UintegerValue(3000));
   Config::SetDefault("ns3::TcpSocket::DelAckCount", UintegerValue(0));
   Config::SetDefault("ns3::DropTailQueue::Mode", StringValue("QUEUE_MODE_PACKETS"));
   Config::SetDefault("ns3::DropTailQueue::MaxPackets", UintegerValue(100));
@@ -53,8 +53,11 @@ main(int argc, char *argv[])
   nodes.Create(2);
 
   PointToPointHelper pointToPoint;
+  PointToPointHelper pointToPoint2;
   pointToPoint.SetDeviceAttribute("DataRate", StringValue("100Mbps"));
   pointToPoint.SetChannelAttribute("Delay", StringValue("1ms"));
+  pointToPoint2.SetDeviceAttribute("DataRate", StringValue("1Gbps"));
+  pointToPoint2.SetChannelAttribute("Delay", StringValue("1ms"));
 
   NetDeviceContainer devices;
   devices = pointToPoint.Install(nodes);
