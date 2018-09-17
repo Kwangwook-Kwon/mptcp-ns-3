@@ -61,6 +61,7 @@ main(int argc, char *argv[])
 
   NetDeviceContainer devices;
   devices = pointToPoint.Install(nodes);
+  devices = pointToPoint2.Install(nodes);
 
   InternetStackHelper internet;
   internet.Install(nodes);
