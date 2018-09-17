@@ -70,6 +70,7 @@ main(int argc, char *argv[])
   Ipv4AddressHelper ipv4;
   ipv4.SetBase("10.1.1.0", "255.255.255.0");
   Ipv4InterfaceContainer i = ipv4.Assign(devices);
+  Ipv4InterfaceContainer i = ipv4.Assign(devices2);
 
   uint16_t port = 9;
   MpTcpPacketSinkHelper sink("ns3::TcpSocketFactory", InetSocketAddress(Ipv4Address::GetAny(), port));
