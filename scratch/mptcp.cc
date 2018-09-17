@@ -46,8 +46,8 @@ main(int argc, char *argv[])
   Config::SetDefault("ns3::DropTailQueue::MaxPackets", UintegerValue(100));
   Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(MpTcpSocketBase::GetTypeId()));
   Config::SetDefault("ns3::MpTcpSocketBase::MaxSubflows", UintegerValue(8)); // Sink
-  //Config::SetDefault("ns3::MpTcpSocketBase::CongestionControl", StringValue("RTT_Compensator"));
-  //Config::SetDefault("ns3::MpTcpSocketBase::PathManagement", StringValue("NdiffPorts"));
+  Config::SetDefault("ns3::MpTcpSocketBase::CongestionControl", StringValue("RTT_Compensator"));
+  Config::SetDefault("ns3::MpTcpSocketBase::PathManagement", StringValue("NdiffPorts"));
 
   NodeContainer nodes;
   nodes.Create(2);
@@ -58,6 +58,7 @@ main(int argc, char *argv[])
   pointToPoint.SetChannelAttribute("Delay", StringValue("10ms"));
   pointToPoint2.SetDeviceAttribute("DataRate", StringValue("1Gbps"));
   pointToPoint2.SetChannelAttribute("Delay", StringValue("1ms"));
+
 
   NetDeviceContainer devices;
   NetDeviceContainer devices2;
@@ -70,7 +71,7 @@ main(int argc, char *argv[])
   Ipv4AddressHelper ipv4;
   ipv4.SetBase("10.1.1.0", "255.255.255.0");
   Ipv4InterfaceContainer i = ipv4.Assign(devices);
-  Ipv4InterfaceContainer i = ipv4.Assign(devices2);
+
 
   uint16_t port = 9;
   MpTcpPacketSinkHelper sink("ns3::TcpSocketFactory", InetSocketAddress(Ipv4Address::GetAny(), port));
