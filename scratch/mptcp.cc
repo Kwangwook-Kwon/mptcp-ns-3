@@ -60,8 +60,9 @@ main(int argc, char *argv[])
   pointToPoint2.SetChannelAttribute("Delay", StringValue("1ms"));
 
   NetDeviceContainer devices;
+  NetDeviceContainer devices2;
   devices = pointToPoint.Install(nodes);
-  devices = pointToPoint2.Install(nodes);
+  devices2 = pointToPoint2.Install(nodes);
 
   InternetStackHelper internet;
   internet.Install(nodes);
