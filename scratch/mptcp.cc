@@ -55,7 +55,7 @@ main(int argc, char *argv[])
   PointToPointHelper pointToPoint;
   PointToPointHelper pointToPoint2;
   pointToPoint.SetDeviceAttribute("DataRate", StringValue("100Mbps"));
-  pointToPoint.SetChannelAttribute("Delay", StringValue("1ms"));
+  pointToPoint.SetChannelAttribute("Delay", StringValue("10ms"));
   pointToPoint2.SetDeviceAttribute("DataRate", StringValue("1Gbps"));
   pointToPoint2.SetChannelAttribute("Delay", StringValue("1ms"));
 
