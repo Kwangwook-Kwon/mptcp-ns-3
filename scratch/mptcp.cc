@@ -47,7 +47,7 @@ main(int argc, char *argv[])
   Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(MpTcpSocketBase::GetTypeId()));
   Config::SetDefault("ns3::MpTcpSocketBase::MaxSubflows", UintegerValue(8)); // Sink
   Config::SetDefault("ns3::MpTcpSocketBase::CongestionControl", StringValue("RTT_Compensator"));
-  Config::SetDefault("ns3::MpTcpSocketBase::PathManagement", StringValue("Fullmesh"));
+  Config::SetDefault("ns3::MpTcpSocketBase::PathManagement", StringValue("FullMesh"));
 
   NodeContainer nodes;
   nodes.Create(2);
