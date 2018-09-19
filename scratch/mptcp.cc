@@ -40,50 +40,57 @@ main(int argc, char *argv[])
   LogComponentEnable("MpTcpSocketBase", LOG_INFO);
 
   Config::SetDefault("ns3::Ipv4GlobalRouting::FlowEcmpRouting", BooleanValue(true));
-  Config::SetDefault("ns3::TcpSocket::SegmentSize", UintegerValue(3000));
+  Config::SetDefault("ns3::TcpSocket::SegmentSize", UintegerValue(1500));
   Config::SetDefault("ns3::TcpSocket::DelAckCount", UintegerValue(0));
   Config::SetDefault("ns3::DropTailQueue::Mode", StringValue("QUEUE_MODE_PACKETS"));
   Config::SetDefault("ns3::DropTailQueue::MaxPackets", UintegerValue(100));
   Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(MpTcpSocketBase::GetTypeId()));
-  Config::SetDefault("ns3::MpTcpSocketBase::MaxSubflows", UintegerValue(8)); // Sink
+  Config::SetDefault("ns3::MpTcpSocketBase::MaxSubflows", UintegerValue(2)); // Sink
   Config::SetDefault("ns3::MpTcpSocketBase::CongestionControl", StringValue("RTT_Compensator"));
   Config::SetDefault("ns3::MpTcpSocketBase::PathManagement", StringValue("FullMesh"));
+  Config::SetDefault("ns3::MpTcpSocketBase::LargePlotting", BooleanValue(true));
+
 
   NodeContainer nodes;
   nodes.Create(2);
+  NodeContainer path1 = NodeContainer (nodes.Get(0), nodes.Get(1));
+  NodeContainer path2 = NodeContainer (nodes.Get(0), nodes.Get(1));
 
   PointToPointHelper pointToPoint;
   PointToPointHelper pointToPoint2;
   pointToPoint.SetDeviceAttribute("DataRate", StringValue("100Mbps"));
-  pointToPoint.SetChannelAttribute("Delay", StringValue("10ms"));
+  pointToPoint.SetChannelAttribute("Delay", StringValue("100ms"));
   pointToPoint2.SetDeviceAttribute("DataRate", StringValue("1Gbps"));
   pointToPoint2.SetChannelAttribute("Delay", StringValue("1ms"));
 
 
-  NetDeviceContainer devices;
-  NetDeviceContainer devices2;
-  devices = pointToPoint.Install(nodes);
-  devices2 = pointToPoint2.Install(nodes);
+  NetDeviceContainer devices1 = pointToPoint.Install(path1);
+  NetDeviceContainer devices2 = pointToPoint.Install(path2);
+ 
 
   InternetStackHelper internet;
   internet.Install(nodes);
 
+
   Ipv4AddressHelper ipv4;
   ipv4.SetBase("10.1.1.0", "255.255.255.0");
-  Ipv4InterfaceContainer i = ipv4.Assign(devices);
-
+  Ipv4InterfaceContainer i1 = ipv4.Assign(devices1);
+  ipv4.SetBase("10.2.2.0", "255.255.255.0");  
+  Ipv4InterfaceContainer i2 = ipv4.Assign(devices2);
 
   uint16_t port = 9;
   MpTcpPacketSinkHelper sink("ns3::TcpSocketFactory", InetSocketAddress(Ipv4Address::GetAny(), port));
   ApplicationContainer sinkApps = sink.Install(nodes.Get(1));
   sinkApps.Start(Seconds(0.0));
-  sinkApps.Stop(Seconds(10.0));
+  sinkApps.Stop(Seconds(40.0));
 
-  MpTcpBulkSendHelper source("ns3::TcpSocketFactory", InetSocketAddress(Ipv4Address(i.GetAddress(1)), port));
+  MpTcpBulkSendHelper source("ns3::TcpSocketFactory", InetSocketAddress(Ipv4Address(i1.GetAddress(1)), port));
   source.SetAttribute("MaxBytes", UintegerValue(0));
+  //source.SetAttribute("PacketSize", UintegerValue (2100));
+  //source.SetAttribute("DataRate", StringValue ("100kb/s"));
   ApplicationContainer sourceApps = source.Install(nodes.Get(0));
   sourceApps.Start(Seconds(0.0));
-  sourceApps.Stop(Seconds(10.0));
+  sourceApps.Stop(Seconds(20.0));
 
   NS_LOG_INFO ("Run Simulation.");
   Simulator::Stop(Seconds(20.0));
